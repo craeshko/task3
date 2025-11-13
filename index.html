@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>Задание 3 — Multiply и текст с градиентом</title>
+  <style>
+    body { margin: 0; padding: 20px; font-family: Arial; }
+    canvas { border: 1px solid #ccc; display: block; margin-bottom: 16px; }
+    button { padding: 10px 14px; }
+  </style>
+</head>
+<body>
+<canvas id="canvas3" width="900" height="520"></canvas>
+<button id="save">Сохранить my_composite.png</button>
+
+<script>
+const canvas = document.getElementById("canvas3");
+const ctx = canvas.getContext("2d");
+
+function render() {
+  // Фон
+  ctx.fillStyle = "#eee";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Multiply: затемняем фон цветным градиентом
+  ctx.globalCompositeOperation = "multiply";
+  const gradBg = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  gradBg.addColorStop(0, "rgba(255, 200, 0, 0.6)");
+  gradBg.addColorStop(1, "rgba(0, 100, 255, 0.6)");
+  ctx.fillStyle = gradBg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Вернем стандартный режим
+  ctx.globalCompositeOperation = "source-over";
+
+  // Текст
+  const text = "Sunny Vibes";
+  const tx = 80, ty = canvas.height / 2;
+
+  ctx.save();
+  ctx.font = "italic 96px Georgia";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = "black";
+  ctx.fillText(text, tx, ty);
+
+  // Внутри текста показываем другой градиент
+  ctx.globalCompositeOperation = "source-in";
+  const gradText = ctx.createLinearGradient(0, 0, canvas.width, 0);
+  gradText.addColorStop(0, "gold");
+  gradText.addColorStop(1, "orange");
+  ctx.fillStyle = gradText;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.restore();
+
+  // Обводка текста
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = "black";
+  ctx.strokeText(text, tx, ty);
+
+  // Подпись
+  ctx.font = "bold 20px Arial";
+  ctx.fillStyle = "black";
+  ctx.fillText("Задание 3: multiply + текст с градиентом", 20, 32);
+}
+
+// Рисуем сразу
+render();
+
+// Экспорт PNG
+document.getElementById("save").onclick = () => {
+  const link = document.createElement("a");
+  link.download = "my_composite.png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+};
+</script>
+</body>
+</html>
